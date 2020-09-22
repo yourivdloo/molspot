@@ -2,6 +2,8 @@ package Controllers;
 
 import Models.User;
 import Repositories.FakeDataStore;
+import Repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -9,10 +11,14 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Context
     private UriInfo uriInfo;
@@ -21,79 +27,63 @@ public class UserController {
 
     @GetMapping("/hello") //GET at http://localhost:XXXX/users/hello
     public @ResponseBody String sayHello() {
-        String msg = "Hello, your resource works!";
-        return msg;
+        return "Hello, your resource works!";
     }
 
     @GetMapping("/{id}") //GET at http://localhost:XXXX/users/3
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserPath(@PathVariable int id) {
-        // UsersRepository usersRepository = RepositoryFactory.getUsersRepository();
-        User user = fakeDataStore.getUser(id);//studentsRepository.get(stNr);
-        if (user == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Please provide a valid user id.").build();
+    public @ResponseBody User getUserPath(@PathVariable int id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            return user.get();
         } else {
-            return Response.ok(user).build();
+            return null;
         }
     }
 
     @GET //GET at http://localhost:XXXX/users?
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllUsers() {
-        List<User> users;
-        users = fakeDataStore.getAllUsers();
-        GenericEntity<List<User>> entity = new GenericEntity<>(users) {  };
-        return Response.ok(entity).build();
+    public @ResponseBody Iterable<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
 
-    @DELETE //DELETE at http://localhost:XXXX/users/3
-    @Path("{id}")
-    public Response deleteUser(@PathParam("id") int id) {
-        fakeDataStore.deleteUser(id);
-        // Idempotent method. Always return the same response (even if the resource has already been deleted before).
-        return Response.noContent().build();
-    }
-
-    @POST //POST at http://localhost:XXXX/users/
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response createUser(User user) {
-        if (!fakeDataStore.addUser(user)){
-            String entity =  "User with id " + user.getId() + " already exists.";
-            return Response.status(Response.Status.CONFLICT).entity(entity).build();
+    @DeleteMapping("/{id}") //DELETE at http://localhost:XXXX/users/3
+    public @ResponseBody String deleteUser(@PathVariable int id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()){
+            userRepository.delete(user.get());
+            return "User["+ user +"] deleted";
         } else {
-            String url = uriInfo.getAbsolutePath() + "/" + user.getId(); // url of the created user
-            URI uri = URI.create(url);
-            return Response.created(uri).build();
+            return "User with id "+ id +" doesn't exist";
         }
     }
 
-    @PUT //PUT at http://localhost:XXXX/users/
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("{id}")
-    public Response updateUser(User user) {
-        // Idempotent method. Always update (even if the resource has already been updated before).
-        if (fakeDataStore.updateUser(user)) {
-            return Response.noContent().build();
+    @PostMapping("/new") //POST at http://localhost:XXXX/users/
+    public @ResponseBody User createUser(@RequestParam String username, @RequestParam String emailAddress, @RequestParam String password) {
+        if (username.equals("") && emailAddress.equals("") && password.equals("")){
+            User user = new User(username, emailAddress, password);
+
+            return userRepository.save(user);
         } else {
-            return Response.status(Response.Status.NOT_FOUND).entity("Please provide a valid user id.").build();
+            return null;
         }
     }
 
-
-    @PUT //PUT at http://localhost:XXXX/users/{id}
-    @Consumes({MediaType.APPLICATION_FORM_URLENCODED})
-    @Path("{id}")
-    public Response updateUser(@PathParam("id") int id,  @FormParam("username") String username, @FormParam("password") String password, @FormParam("emailAddress") String emailAddress) {
-        User user = fakeDataStore.getUser(id);
-        if (user == null){
-            return Response.status(Response.Status.NOT_FOUND).entity("Please provide a valid user id.").build();
+    @PutMapping("/{id}") //PUT at http://localhost:XXXX/users/
+    public @ResponseBody User updateUser(@PathVariable Integer id, @RequestParam String username, @RequestParam String emailAddress, @RequestParam String password) {
+        Optional<User> optUser = userRepository.findById(id);
+        if (optUser.isPresent()){
+            User user = optUser.get();
+            if (username.equals("") && emailAddress.equals("") && password.equals("")){
+                user.setUsername(username);
+                user.setEmailAddress(emailAddress);
+                user.setPassword(password);
+                return userRepository.save(user);
+            } else {
+                return null;
+            }
+        } else{
+            return null;
         }
 
-        user.setUsername(username);
-        user.setEmailAddress(emailAddress);
-        user.setPassword(password);
-        return Response.noContent().build();
     }
-
 }
