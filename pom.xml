@@ -86,16 +86,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <release>14</release>
-                    <fork>true</fork>
-                    <executable>C:\Program Files\Java\jdk-14.0.2\bin\javac</executable>
-                </configuration>
-            </plugin>
-
         </plugins>
     </build>
 
