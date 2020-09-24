@@ -1,4 +1,4 @@
-package Models;
+package myproject.molspot.Models;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,29 +11,29 @@ public class Candidate {
     public Candidate(){
 
     }
-    public Candidate(String name, int id){
-        Name = name;
-        Id = id;
+    public Candidate(String name){
+        this.name = name;
     }
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer Id;
-    public Integer getId(){ return Id; }
+    private Integer id;
+    public Integer getId(){ return id; }
+    public void setId(Integer id) { this.id = id; }
 
-    private String Name;
+    private String name;
     public String getName(){
-        return Name;
+        return name;
     }
     public void setName(String name){
-        Name = name;
+        this.name = name;
     }
 
-    private boolean IsEliminated = false;
+    private boolean isEliminated = false;
     public boolean getIsEliminated(){
-        return IsEliminated;
+        return isEliminated;
     }
     public void setIsEliminated(boolean isEliminated){
-        IsEliminated = isEliminated;
+        this.isEliminated = isEliminated;
     }
 }

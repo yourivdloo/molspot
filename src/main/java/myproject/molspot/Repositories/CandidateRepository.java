@@ -1,7 +1,9 @@
-package Repositories;
+package myproject.molspot.Repositories;
 
-import Models.Candidate;
+import myproject.molspot.Models.Candidate;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface CandidateRepository extends CrudRepository<Candidate, Integer> {
 }
