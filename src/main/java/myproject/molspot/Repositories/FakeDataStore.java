@@ -1,8 +1,8 @@
-package Repositories;
+package myproject.molspot.Repositories;
 
-import Models.Candidate;
-import Models.Episode;
-import Models.User;
+import myproject.molspot.Models.Candidate;
+import myproject.molspot.Models.Episode;
+import myproject.molspot.Models.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +27,11 @@ public class FakeDataStore {
         userList.add(new User("BanjoMovies", "BardoEllens@gmail.com", "koudePannenkoeken"));
         userList.add(new User("EllieLustFan", "Dylan.stoer@gmail.com", "Ellie4LIFE"));
 
-        candidateList.add(new Candidate("Ron Boshard", 1));
-        candidateList.add(new Candidate("Nikkie de Jager", 2));
-        candidateList.add(new Candidate("Ellie Lust", 3));
-        candidateList.add(new Candidate("Jeroen kijk in de Vegte", 4));
-        candidateList.add(new Candidate("Patrick Martens", 5));
+        candidateList.add(new Candidate("Ron Boshard"));
+        candidateList.add(new Candidate("Nikkie de Jager"));
+        candidateList.add(new Candidate("Ellie Lust"));
+        candidateList.add(new Candidate("Jeroen kijk in de Vegte"));
+        candidateList.add(new Candidate("Patrick Martens"));
 
     }
 

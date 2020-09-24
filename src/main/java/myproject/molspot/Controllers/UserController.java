@@ -1,16 +1,14 @@
-package Controllers;
+package myproject.molspot.Controllers;
 
-import Models.User;
-import Repositories.FakeDataStore;
-import Repositories.UserRepository;
+import myproject.molspot.Models.User;
+import myproject.molspot.Repositories.FakeDataStore;
+import myproject.molspot.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -40,7 +38,7 @@ public class UserController {
         }
     }
 
-    @GET //GET at http://localhost:XXXX/users?
+    @GetMapping("") //GET at http://localhost:XXXX/users?
     public @ResponseBody Iterable<User> getAllUsers() {
         return userRepository.findAll();
     }
@@ -59,7 +57,7 @@ public class UserController {
 
     @PostMapping("/new") //POST at http://localhost:XXXX/users/
     public @ResponseBody User createUser(@RequestParam String username, @RequestParam String emailAddress, @RequestParam String password) {
-        if (username.equals("") && emailAddress.equals("") && password.equals("")){
+        if (!username.equals("") && !emailAddress.equals("") && !password.equals("")){
             User user = new User(username, emailAddress, password);
 
             return userRepository.save(user);
@@ -73,10 +71,10 @@ public class UserController {
         Optional<User> optUser = userRepository.findById(id);
         if (optUser.isPresent()){
             User user = optUser.get();
-            if (username.equals("") && emailAddress.equals("") && password.equals("")){
+            if (!username.equals("") && !emailAddress.equals("") && !password.equals("")){
                 user.setUsername(username);
                 user.setEmailAddress(emailAddress);
-                user.setPassword(password);
+                user.hashPassword(password);
                 return userRepository.save(user);
             } else {
                 return null;
