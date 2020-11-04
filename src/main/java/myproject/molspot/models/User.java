@@ -1,4 +1,4 @@
-package myproject.molspot.Models;
+package myproject.molspot.models;
 
 import javax.persistence.*;
 
@@ -50,4 +50,16 @@ public class User {
     public void setPasswordHash(int passwordHash){
         this.passwordHash = passwordHash;
     }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    @Column(name = "points")
+    private int points;
+
 }

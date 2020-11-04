@@ -1,8 +1,7 @@
-package myproject.molspot.Repositories;
+package myproject.molspot.repositories;
 
-import myproject.molspot.Models.Candidate;
-import myproject.molspot.Models.Episode;
-import myproject.molspot.Models.User;
+import myproject.molspot.models.Candidate;
+import myproject.molspot.models.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +10,6 @@ public class FakeDataStore {
 
     private final List<User> userList = new ArrayList<>();
     private final List<Candidate> candidateList = new ArrayList<>();
-    private final List<Episode> episodeList = new ArrayList<>();
 
     // singleton pattern
     private static final FakeDataStore INSTANCE = new FakeDataStore();
@@ -20,7 +18,6 @@ public class FakeDataStore {
     }
 
     private FakeDataStore() {
-        // work this out better, add few more countries and students
         userList.add(new User("MolPredictor6", "Molpredictor@gmail.com", "ikweetdemolwel"));
         userList.add(new User("Mollootje", "Molloot@hotmail.com", "176389"));
         userList.add(new User("WouterDeMol", "Wouter.youtube@gmail.com", "Klaasfan5"));
@@ -34,12 +31,6 @@ public class FakeDataStore {
         candidateList.add(new Candidate("Patrick Martens"));
 
     }
-
-    public List<User> getUsers() {
-        return userList;
-    }
-    public List<Candidate> getCandidates() { return candidateList; }
-    public List<Episode> getEpisodes() { return episodeList; }
 
     public User getUser(int id) {
         for (User user : userList) {

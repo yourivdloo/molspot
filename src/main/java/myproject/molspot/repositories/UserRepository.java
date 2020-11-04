@@ -1,6 +1,6 @@
-package myproject.molspot.Repositories;
+package myproject.molspot.repositories;
 
-import myproject.molspot.Models.User;
+import myproject.molspot.models.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
