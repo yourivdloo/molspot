@@ -5,15 +5,14 @@ import myproject.molspot.repositories.CandidateRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
-class CandidateServiceTest {
+@SpringBootTest
+public class CandidateServiceTest {
 
     @Mock
     CandidateRepository candidateRepository;
@@ -26,11 +25,21 @@ class CandidateServiceTest {
         //Arrange
         int id = 4;
         Candidate candidate= new Candidate("peter");
+        candidate.setId(id);
+        candidate.setIsEliminated(false);
 
-        when(candidateRepository.findById(id)).thenReturn(Optional.of(candidate));
+        when(candidateRepository.findById(4)).thenReturn(Optional.of(candidate));
         //Act
-        Optional<Candidate> actual = candidateService.getCandidateById(id);
+        Candidate actual = candidateService.getCandidateById(id).get();
         //Assert
+        assertEquals(candidate, actual);
     }
 
+    @Test
+    void createCandidate(){
+        Candidate candidate = new Candidate("Peter");
+        when(candidateRepository.save(candidate)).thenReturn(candidate);
+        Candidate actual = candidateService.saveCandidate(candidate);
+        assertEquals(candidate, actual);
+    }
 }
