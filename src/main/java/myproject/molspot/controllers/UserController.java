@@ -1,6 +1,5 @@
 package myproject.molspot.controllers;
 import myproject.molspot.models.User;
-import myproject.molspot.repositories.UserRepository;
 import myproject.molspot.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.ws.rs.core.*;
 import java.util.Optional;
 
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000/")
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -19,31 +18,67 @@ public class UserController {
 
     @Context
     private UriInfo uriInfo;
-    // this has to be static because the service is stateless:
-    //private final FakeDataStore fakeDataStore = FakeDataStore.getInstance();
 
-    @GetMapping("") //GET at http://localhost:XXXX/users?
+    @GetMapping("")
     public @ResponseBody ResponseEntity<Object> getAllUsers() {
-        return userService.getAllUsers();
+        Iterable<User> iUsers = userService.getAllUsers();
+        if (iUsers != null) {
+            return new ResponseEntity<>(iUsers, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("There were no users in the database", HttpStatus.NOT_FOUND);
+        }
     }
 
-    @GetMapping("/{id}") //GET at http://localhost:XXXX/users/3
+    @GetMapping("/{id}")
     public @ResponseBody ResponseEntity<Object> getUserById(@PathVariable int id) {
-        return userService.getUserById(id);
+        Optional<User> user = userService.getUserById(id);
+        if (user.isPresent()) {
+            return new ResponseEntity<>(user.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Please provide a valid user ID", HttpStatus.NOT_FOUND);
+        }
     }
 
-    @DeleteMapping("/{id}") //DELETE at http://localhost:XXXX/users/3
+    @DeleteMapping("/{id}")
     public @ResponseBody ResponseEntity<Object> deleteUser(@PathVariable int id) {
-        return userService.deleteUser(id);
+        Optional<User> user = userService.getUserById(id);
+        if (user.isPresent()) {
+            User deletedUser = userService.deleteUser(user.get());
+            return new ResponseEntity<>(deletedUser, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("User with id " + id + " does not exist", HttpStatus.NOT_FOUND);
+        }
     }
 
-    @PostMapping("/new") //POST at http://localhost:XXXX/users/
+    @PostMapping("/new")
     public @ResponseBody ResponseEntity<Object> createUser(@RequestParam String username, @RequestParam String emailAddress, @RequestParam String password) {
-        return userService.createUser(username, emailAddress, password);
+        if (!username.equals("") && !emailAddress.equals("") && !password.equals("")) {
+            User user = new User(username, emailAddress, password);
+            User createdUser = userService.saveUser(user);
+            return new ResponseEntity<>(createdUser, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Please enter all the fields", HttpStatus.CONFLICT);
+        }
     }
 
-    @PutMapping("/{id}") //PUT at http://localhost:XXXX/users/
+    @PutMapping("/{id}")
     public @ResponseBody ResponseEntity<Object> updateUser(@PathVariable Integer id, @RequestParam(required = false) String username, @RequestParam(required = false) String emailAddress, @RequestParam(required = false) String password) {
-        return userService.updateUser(id, username, emailAddress, password);
+        Optional<User> optUser = userService.getUserById(id);
+        if (optUser.isPresent()) {
+            User user = optUser.get();
+            if (username != null && !username.isEmpty()) {
+                user.setUsername(username);
+            }
+            if (emailAddress != null && !emailAddress.isEmpty()) {
+                user.setEmailAddress(emailAddress);
+            }
+            if (password != null && !password.isEmpty()) {
+                user.hashPassword(password);
+            }
+            User updatedUser = userService.saveUser(user);
+            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("User with id: " + id + ". Doesn't exist", HttpStatus.NOT_FOUND);
+        }
     }
 }

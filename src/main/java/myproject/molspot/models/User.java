@@ -15,7 +15,7 @@ public class User {
         hashPassword(password);
     }
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Integer id;
     public Integer getId(){
