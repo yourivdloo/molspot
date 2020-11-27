@@ -1,5 +1,6 @@
 package myproject.molspot.services;
 
+import myproject.molspot.exceptions.NotFoundException;
 import myproject.molspot.models.Candidate;
 import myproject.molspot.repositories.CandidateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +16,25 @@ public class CandidateService {
     private CandidateRepository candidateRepository;
 
     public Iterable<Candidate> getAllCandidates() {
-        return candidateRepository.findAll();
+        Iterable<Candidate> iCandidate = candidateRepository.findAll();
+        if (iCandidate.iterator().hasNext()){
+            return iCandidate;
+        } else{
+            throw new NotFoundException("There were no candidates in the database");
+        }
     }
 
-    public Optional<Candidate> getCandidateById(int id) {
-        return candidateRepository.findById(id);
+    public Candidate getCandidateById(int id) {
+        Optional<Candidate> optCandidate = candidateRepository.findById(id);
+        if (optCandidate.isPresent()) {
+            return optCandidate.get();
+        } else {
+            throw new NotFoundException("Candidate with id "+id+" does not exist");
+        }
     }
 
-    public Candidate deleteCandidate(Candidate candidate) {
+    public Candidate deleteCandidate(int id) {
+        Candidate candidate = getCandidateById(id);
         candidateRepository.delete(candidate);
         return candidate;
     }

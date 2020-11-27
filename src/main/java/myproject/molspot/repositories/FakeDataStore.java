@@ -64,7 +64,7 @@ public class FakeDataStore {
         }
         old.setUsername(user.getUsername());
         old.setEmailAddress(user.getEmailAddress());
-        old.setPasswordHash(user.getPasswordHash());
+        old.setPassword(user.getPassword());
         return true;
     }
 
