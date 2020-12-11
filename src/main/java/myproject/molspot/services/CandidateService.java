@@ -17,9 +17,9 @@ public class CandidateService {
 
     public Iterable<Candidate> getAllCandidates() {
         Iterable<Candidate> iCandidate = candidateRepository.findAll();
-        if (iCandidate.iterator().hasNext()){
+        if (iCandidate.iterator().hasNext()) {
             return iCandidate;
-        } else{
+        } else {
             throw new NotFoundException("There were no candidates in the database");
         }
     }
@@ -29,7 +29,7 @@ public class CandidateService {
         if (optCandidate.isPresent()) {
             return optCandidate.get();
         } else {
-            throw new NotFoundException("Candidate with id "+id+" does not exist");
+            throw new NotFoundException("Candidate with id " + id + " does not exist");
         }
     }
 
@@ -39,7 +39,8 @@ public class CandidateService {
         return candidate;
     }
 
-    public @ResponseBody Candidate saveCandidate(Candidate candidate) {
+    public @ResponseBody
+    Candidate saveCandidate(Candidate candidate) {
         return candidateRepository.save(candidate);
     }
 }

@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
@@ -35,13 +34,15 @@ public class SuspicionController {
 
 
     @GetMapping("/{userId}")
-    public @ResponseBody ResponseEntity<Object> getSuspicionsByUser(@PathVariable int userId) {
+    public @ResponseBody
+    ResponseEntity<Object> getSuspicionsByUser(@PathVariable int userId) {
         Iterable<Suspicion> iSuspicion = suspicionService.getSuspicionsByUser(userId);
         return new ResponseEntity<>(iSuspicion, HttpStatus.OK);
     }
 
     @PostMapping("/new")
-    public @ResponseBody ResponseEntity<Object> createSuspicion(@RequestParam int userId, @RequestParam int candidateId, @RequestParam int episodeId, @RequestParam int amount){
+    public @ResponseBody
+    ResponseEntity<Object> createSuspicion(@RequestParam int userId, @RequestParam int candidateId, @RequestParam int episodeId, @RequestParam int amount) {
         User user = userService.getUserById(userId);
         Candidate candidate = candidateService.getCandidateById(candidateId);
         Episode episode = episodeService.getEpisodeById(episodeId);

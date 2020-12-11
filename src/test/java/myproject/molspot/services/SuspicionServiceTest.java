@@ -1,20 +1,24 @@
 package myproject.molspot.services;
 
+import myproject.molspot.exceptions.BadRequestException;
+import myproject.molspot.exceptions.NotFoundException;
 import myproject.molspot.models.Candidate;
 import myproject.molspot.models.Episode;
 import myproject.molspot.models.Suspicion;
 import myproject.molspot.models.User;
 import myproject.molspot.repositories.SuspicionRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
+
 @SpringBootTest
 class SuspicionServiceTest {
 
@@ -42,6 +46,48 @@ class SuspicionServiceTest {
     }
 
     @Test
+    void saveSuspicion_Not_enough_points(){
+        User user = new User("Molspotter", "Molspotter@gmail.com", "Testwachtwoord123");
+        user.setPoints(100);
+        Candidate candidate = new Candidate("Peter");
+        Episode episode = new Episode(LocalDateTime.now());
+        int amount = 200;
+        Suspicion suspicion = new Suspicion(user, candidate, episode, amount);
+
+        Assertions.assertThrows(BadRequestException.class, () ->{
+            suspicionService.saveSuspicion(suspicion);
+        });
+    }
+
+    @Test
+    void saveSuspicion_Negative_amount(){
+        User user = new User("Molspotter", "Molspotter@gmail.com", "Testwachtwoord123");
+        user.setPoints(100);
+        Candidate candidate = new Candidate("Peter");
+        Episode episode = new Episode(LocalDateTime.now());
+        int amount = -200;
+        Suspicion suspicion = new Suspicion(user, candidate, episode, amount);
+
+        Assertions.assertThrows(BadRequestException.class, () ->{
+            suspicionService.saveSuspicion(suspicion);
+        });
+    }
+
+    @Test
+    void saveSuspicion_Amount_zero(){
+        User user = new User("Molspotter", "Molspotter@gmail.com", "Testwachtwoord123");
+        user.setPoints(100);
+        Candidate candidate = new Candidate("Peter");
+        Episode episode = new Episode(LocalDateTime.now());
+        int amount = 0;
+        Suspicion suspicion = new Suspicion(user, candidate, episode, amount);
+
+        Assertions.assertThrows(BadRequestException.class, () ->{
+            suspicionService.saveSuspicion(suspicion);
+        });
+    }
+
+    @Test
     void getSuspicionsByUser(){
         //Arrange
         int id = 5;
@@ -60,6 +106,17 @@ class SuspicionServiceTest {
         Iterable<Suspicion> actual = suspicionService.getSuspicionsByUser(id);
         //Assert
         assertEquals(iSuspicion, actual);
+    }
+
+    @Test
+    void getSuspicionsByUser_Not_found(){
+        Suspicion[] suspicions = {};
+        Iterable<Suspicion> iSuspicion = Arrays.asList(suspicions);
+        int id = 0;
+        when(suspicionRepository.findAllByUserId(id)).thenReturn(iSuspicion);
+        Assertions.assertThrows(NotFoundException.class, () ->{
+            suspicionService.getSuspicionsByUser(id);
+        });
     }
 
 }

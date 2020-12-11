@@ -18,7 +18,7 @@ public class MyUserDetailsService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String userName){
+    public UserDetails loadUserByUsername(String userName) {
         Optional<User> user = userRepository.findByUsername(userName);
         if (user.isPresent()) {
             var mapped = user.map(MyUserDetails::new);
@@ -26,12 +26,7 @@ public class MyUserDetailsService implements UserDetailsService {
                 return mapped.get();
             }
         }
-            throw new UsernameNotFoundException("Not found: " + userName);
-//        User user = new User();
-//        user.setUsername("John");
-//        user.setPassword("pass");
-//        user.setRoles("ROLE_USER");
-//        return new MyUserDetails(user);
+        throw new UsernameNotFoundException("Not found: " + userName);
     }
 }
 

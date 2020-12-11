@@ -15,18 +15,18 @@ public class SuspicionService {
 
     public Iterable<Suspicion> getSuspicionsByUser(int userId) {
         Iterable<Suspicion> iSuspicion = suspicionRepository.findAllByUserId(userId);
-        if (iSuspicion.iterator().hasNext()){
+        if (iSuspicion.iterator().hasNext()) {
             return iSuspicion;
-        } else{
-            throw new NotFoundException("User with id "+userId+" does not have any suspicions");
+        } else {
+            throw new NotFoundException("User with id " + userId + " does not have any suspicions");
         }
     }
 
-    public Suspicion saveSuspicion(Suspicion suspicion){
-            if (suspicion.getAmount() > 0 && suspicion.getAmount() <= suspicion.getUser().getPoints()){
-                return suspicionRepository.save(suspicion);
-            } else {
-                throw new BadRequestException("Please enter a valid amount of points");
-            }
+    public Suspicion saveSuspicion(Suspicion suspicion) {
+        if (suspicion.getAmount() > 0 && suspicion.getAmount() <= suspicion.getUser().getPoints()) {
+            return suspicionRepository.save(suspicion);
+        } else {
+            throw new BadRequestException("Please enter a valid amount of points");
         }
+    }
 }

@@ -1,4 +1,5 @@
 package myproject.molspot.controllers;
+
 import myproject.molspot.exceptions.BadRequestException;
 import myproject.molspot.models.Candidate;
 import myproject.molspot.services.CandidateService;
@@ -6,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.ws.rs.core.*;
 
 @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
@@ -21,26 +21,30 @@ public class CandidateController {
     private UriInfo uriInfo;
 
     @GetMapping("")
-    public @ResponseBody ResponseEntity<Object> getAllCandidates() {
+    public @ResponseBody
+    ResponseEntity<Object> getAllCandidates() {
         Iterable<Candidate> iCandidate = candidateService.getAllCandidates();
-            return new ResponseEntity<>(iCandidate, HttpStatus.OK);
+        return new ResponseEntity<>(iCandidate, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public @ResponseBody ResponseEntity<Object> getCandidateById(@PathVariable int id) {
+    public @ResponseBody
+    ResponseEntity<Object> getCandidateById(@PathVariable int id) {
         Candidate candidate = candidateService.getCandidateById(id);
-            return new ResponseEntity<>(candidate, HttpStatus.OK);
+        return new ResponseEntity<>(candidate, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public @ResponseBody ResponseEntity<Object> deleteCandidate(@PathVariable int id) {
+    public @ResponseBody
+    ResponseEntity<Object> deleteCandidate(@PathVariable int id) {
         Candidate result = candidateService.deleteCandidate(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping("/new")
-    public @ResponseBody ResponseEntity<Object> createCandidate(@RequestParam String name) {
-        if (!name.equals("")){
+    public @ResponseBody
+    ResponseEntity<Object> createCandidate(@RequestParam String name) {
+        if (!name.equals("")) {
             Candidate candidate = new Candidate(name);
             Candidate result = candidateService.saveCandidate(candidate);
             return new ResponseEntity<>(result, HttpStatus.OK);
@@ -50,11 +54,16 @@ public class CandidateController {
     }
 
     @PutMapping("/{id}")
-    public @ResponseBody ResponseEntity<Object> updateCandidate(@PathVariable Integer id, @RequestParam(required = false) String name, @RequestParam(required = false) Boolean isEliminated) {
+    public @ResponseBody
+    ResponseEntity<Object> updateCandidate(@PathVariable Integer id, @RequestParam(required = false) String name, @RequestParam(required = false) Boolean isEliminated) {
         Candidate candidate = candidateService.getCandidateById(id);
-            if (name != null && !name.isEmpty()) { candidate.setName(name); }
-            if (isEliminated != null) { candidate.setIsEliminated(isEliminated);}
-            Candidate result = candidateService.saveCandidate(candidate);
-            return new ResponseEntity<>(result, HttpStatus.OK);
+        if (name != null && !name.isEmpty()) {
+            candidate.setName(name);
+        }
+        if (isEliminated != null) {
+            candidate.setIsEliminated(isEliminated);
+        }
+        Candidate result = candidateService.saveCandidate(candidate);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

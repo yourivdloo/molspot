@@ -1,11 +1,15 @@
 package myproject.molspot.services;
 
+import myproject.molspot.exceptions.NotFoundException;
 import myproject.molspot.models.Candidate;
 import myproject.molspot.repositories.CandidateRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -33,6 +37,17 @@ class CandidateServiceTest {
         Candidate actual = candidateService.getCandidateById(id);
         //Assert
         assertEquals(candidate, actual);
+    }
+
+    @Test
+    void getCandidateById_Not_found(){
+        int id = 0;
+
+        when(candidateRepository.findById(id)).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(NotFoundException.class, () ->{
+            candidateService.getCandidateById(id);
+        });
     }
 
     @Test
@@ -73,5 +88,40 @@ class CandidateServiceTest {
         Iterable<Candidate> actual = candidateService.getAllCandidates();
         //Assert
         assertEquals(candidates, actual);
+    }
+
+    @Test
+    void getAllCandidates_Not_found(){
+        Iterable<Candidate> candidates = new ArrayList<>();
+        when(candidateRepository.findAll()).thenReturn(candidates);
+        Assertions.assertThrows(NotFoundException.class, () ->{
+            Iterable<Candidate> actual = candidateService.getAllCandidates();
+        });
+    }
+
+    @Test
+    void deleteCandidate(){
+        Candidate can = new Candidate("Johan");
+        int id = 1;
+        can.setId(id);
+        can.setIsEliminated(false);
+
+        when(candidateRepository.findById(id)).thenReturn(Optional.of(can));
+
+        Candidate deleted = candidateService.deleteCandidate(id);
+
+        assertEquals(can, deleted);
+    }
+
+    @Test
+    void deleteCandidate_Not_found(){
+        Candidate can = new Candidate("Johan");
+        int id = 1;
+        can.setId(id);
+        can.setIsEliminated(false);
+        when(candidateRepository.findById(id)).thenReturn(Optional.empty());
+        Assertions.assertThrows(NotFoundException.class, () ->{
+            candidateService.deleteCandidate(id);
+        });
     }
 }
