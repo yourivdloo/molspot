@@ -4,7 +4,11 @@ import myproject.molspot.exceptions.BadRequestException;
 import myproject.molspot.exceptions.NotFoundException;
 import myproject.molspot.models.Candidate;
 import myproject.molspot.models.Episode;
+import myproject.molspot.models.Suspicion;
+import myproject.molspot.models.User;
 import myproject.molspot.repositories.EpisodeRepository;
+import myproject.molspot.repositories.SuspicionRepository;
+import myproject.molspot.repositories.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -17,6 +21,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 @SpringBootTest
 class EpisodeServiceTest {
@@ -26,6 +31,18 @@ class EpisodeServiceTest {
 
     @InjectMocks
     EpisodeService episodeService;
+
+    @Mock
+    UserRepository userRepository;
+
+    @InjectMocks
+    UserService userService;
+
+    @Mock
+    SuspicionRepository suspicionRepository;
+
+    @InjectMocks
+    SuspicionService suspicionService;
 
     @Test
     void getEpisodeById(){
@@ -124,4 +141,51 @@ class EpisodeServiceTest {
             episodeService.deleteEpisode(id);
         });
     }
+
+//    @Test
+//    void endEpisode(){
+//        //Arrange
+//        User expectedU1 = new User("testuser1", "test1@gmail.com", "12345");
+//        expectedU1.setId(1);
+//        expectedU1.setPoints(100);
+//
+//        User u1 = new User("testuser1", "test1@gmail.com", "12345");
+//        u1.setId(1);
+//        u1.setPoints(200);
+//        User u2 = new User("testuser2", "test2@gmail.com", "12345");
+//        u1.setId(2);
+//        u2.setPoints(200);
+//        Iterable<User> users = new ArrayList<>(){{add(u1); add(u2);}};
+//        when(userRepository.findAll()).thenReturn(users);
+//
+//        Episode episode = new Episode(LocalDateTime.now().minusHours(3));
+//
+//        Candidate can1 = new Candidate("Fred");
+//        can1.setId(1);
+//        can1.setIsEliminated(false);
+//        Candidate can2 = new Candidate("Peter");
+//        can2.setId(2);
+//        can2.setIsEliminated(false);
+//        Candidate can3 = new Candidate("Ingrid");
+//        can3.setId(3);
+//        can3.setIsEliminated(true);
+//
+//        Suspicion sus1 = new Suspicion(u1,can1,episode, 50);
+//        Suspicion sus2 = new Suspicion(u1,can3,episode, 150);
+//        Iterable<Suspicion> suspicionsU1 = new ArrayList<>(){{add(sus1); add(sus2);}};
+//
+//        Suspicion sus3 = new Suspicion(u2,can2,episode, 200);
+//        Iterable<Suspicion> suspicionsU2 = new ArrayList<>(){{add(sus3);}};
+//
+//        when(suspicionRepository.findAllByUserId(u1.getId())).thenReturn(suspicionsU1);
+//        when(suspicionRepository.findAllByUserId(u2.getId())).thenReturn(suspicionsU2);
+//
+//        when(userRepository.save(any(User.class))).thenReturn(any(User.class));
+//
+//        //Act
+//        episodeService.endEpisode(episode);
+//
+//        //Assert
+//        assertEquals(expectedU1, u1);
+//    }
 }

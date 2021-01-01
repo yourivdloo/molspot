@@ -40,8 +40,17 @@ public class Episode {
         this.startDate = startDate;
     }
 
+    public boolean getHasEnded() {
+        return hasEnded;
+    }
+
+    public void setHasEnded(boolean hasEnded) {
+        this.hasEnded = hasEnded;
+    }
+
+    public boolean hasEnded;
+
     @JsonIgnore
-    @Transient
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "episode")
     private Collection<Suspicion> suspicions = new ArrayList<>();
 }

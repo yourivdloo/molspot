@@ -50,7 +50,6 @@ public class Candidate {
     }
 
     @JsonIgnore
-    @Transient
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "candidate")
     private Collection<Suspicion> suspicions = new ArrayList<>();
 }

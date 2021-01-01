@@ -23,7 +23,7 @@ public class SuspicionService {
     }
 
     public Suspicion saveSuspicion(Suspicion suspicion) {
-        if (suspicion.getAmount() > 0 && suspicion.getAmount() <= suspicion.getUser().getPoints()) {
+        if (suspicion.getAmount() > 0 && suspicion.getAmount() <= suspicion.getUser().getPoints() && !suspicion.getEpisode().getHasEnded()) {
             return suspicionRepository.save(suspicion);
         } else {
             throw new BadRequestException("Please enter a valid amount of points");

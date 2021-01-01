@@ -94,7 +94,6 @@ public class User {
     private Collection<Pool> pools = new ArrayList<>();
 
     @JsonIgnore
-    @Transient
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Collection<Suspicion> suspicions = new ArrayList<>();
 

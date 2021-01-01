@@ -33,6 +33,15 @@ public class UserService {
         }
     }
 
+    public User getUserByUsername(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new NotFoundException("User with username " + username + " does not exist");
+        }
+    }
+
     public User deleteUser(int id) {
         User user = getUserById(id);
         userRepository.delete(user);
