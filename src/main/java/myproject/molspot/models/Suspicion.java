@@ -64,7 +64,7 @@ public class Suspicion {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "candidate_id", nullable = false)
     private Candidate candidate;
 

@@ -21,7 +21,8 @@ public class User {
         this.username = username;
         this.emailAddress = emailAddress;
         this.password = encoder.encode(password);
-        this.roles = "USER_ROLE";
+        this.roles = "ROLE_USER";
+        this.points = 200;
     }
 
     @Id

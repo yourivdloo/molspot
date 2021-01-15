@@ -71,12 +71,33 @@ public class EpisodeService {
                 }
             }
             for(Suspicion sus:episodeSuspicions){
+                u.setPoints(u.getPoints() - sus.getAmount());
                 if(!sus.getCandidate().getIsEliminated()){
                     points = points + sus.getAmount() * 2;
                 }
             }
-            u.setPoints(points);
+            u.setPoints(u.getPoints() + points);
             userService.updateUser(u);
         }
+    }
+
+    public Episode getCurrentEpisode(){
+        Iterable<Episode> episodes = getAllEpisodes();
+        Episode currentEpisode = null;
+        int i = 0;
+        for (Episode e: episodes
+             ) {
+            if(!e.hasEnded){
+                if(i == 0){
+                    currentEpisode = e;
+                    i++;
+                } else{
+                    if (e.getStartDate().isBefore(currentEpisode.getStartDate())){
+                        currentEpisode = e;
+                    }
+                }
+            }
+        }
+        return currentEpisode;
     }
 }

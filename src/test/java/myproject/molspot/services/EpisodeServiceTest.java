@@ -142,6 +142,20 @@ class EpisodeServiceTest {
         });
     }
 
+    @Test
+    void getCurrentEpisode(){
+        Episode e1 = new Episode(LocalDateTime.now().minusWeeks(2));
+        e1.setHasEnded(true);
+        Episode e2 = new Episode(LocalDateTime.now().plusDays(1));
+        Episode e3 = new Episode(LocalDateTime.now().plusWeeks(1));
+        Iterable<Episode> iEpisode = new ArrayList<>(){{add(e1); add(e2); add(e3);}};
+
+        when(episodeRepository.findAll()).thenReturn(iEpisode);
+
+        Episode actual = episodeService.getCurrentEpisode();
+        assertEquals(e2, actual);
+    }
+
 //    @Test
 //    void endEpisode(){
 //        //Arrange

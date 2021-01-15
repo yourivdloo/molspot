@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
@@ -42,11 +43,31 @@ public class SuspicionController {
 
     @PostMapping("/new")
     public @ResponseBody
-    ResponseEntity<Object> createSuspicion(@RequestParam int userId, @RequestParam int candidateId, @RequestParam int episodeId, @RequestParam int amount) {
+    ResponseEntity<Object> createSuspicion(@RequestParam int userId, @RequestParam int candidateId, @RequestParam(required = false) Integer amount) {
         User user = userService.getUserById(userId);
         Candidate candidate = candidateService.getCandidateById(candidateId);
-        Episode episode = episodeService.getEpisodeById(episodeId);
-        Suspicion suspicion = new Suspicion(user, candidate, episode, amount);
+        Episode episode = episodeService.getCurrentEpisode();
+        int sAmount = 0;
+        if (amount != null){
+            sAmount = amount;
+        }
+        Suspicion suspicion = new Suspicion(user, candidate, episode, sAmount);
+        Suspicion result = suspicionService.saveSuspicion(suspicion);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+//    @DeleteMapping("/{id}")
+//    public @ResponseBody
+//    ResponseEntity<Object> deleteSuspicion(@PathVariable int id) {
+//        Suspicion result = suspicionService.deleteSuspicion(id);
+//        return new ResponseEntity<>(result, HttpStatus.OK);
+//    }
+
+    @PutMapping("/{id}")
+    public @ResponseBody
+    ResponseEntity<Object> updateSuspicion(@PathVariable int id, @RequestParam int amount){
+        Suspicion suspicion = suspicionService.getSuspicionById(id);
+        suspicion.setAmount(amount);
         Suspicion result = suspicionService.saveSuspicion(suspicion);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
