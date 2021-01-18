@@ -89,7 +89,7 @@ public class UserController {
         if (password != null && !password.isEmpty()) {
             user.setPassword(password);
         }
-        if (points > 0) {
+        if (points >= 0) {
             user.setPoints(points);
         }
         User result = userService.updateUser(user);

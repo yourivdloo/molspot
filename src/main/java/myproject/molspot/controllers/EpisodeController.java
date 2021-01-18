@@ -58,18 +58,20 @@ public class EpisodeController {
 
     @PutMapping("/{id}")
     public @ResponseBody
-    ResponseEntity<Object> updateEpisode(@PathVariable Integer id, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate, @RequestParam(required = false) Boolean hasEnded) {
+    ResponseEntity<Object> updateEpisode(@PathVariable Integer id, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate) {
         Episode episode = episodeService.getEpisodeById(id);
+        Episode result = null;
         if (startDate != null) {
             episode.setStartDate(startDate);
         }
-        if (hasEnded != null){
-            episode.setHasEnded(hasEnded);
-            if(hasEnded) {
-                episodeService.endEpisode(episode);
-            }
-        }
-        Episode result = episodeService.saveEpisode(episode);
+            result = episodeService.saveEpisode(episode);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/end")
+    public @ResponseBody
+    ResponseEntity<Object> endEpisode(@PathVariable int id){
+        Episode result = episodeService.endEpisode(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

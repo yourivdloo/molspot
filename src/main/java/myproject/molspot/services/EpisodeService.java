@@ -59,40 +59,41 @@ public class EpisodeService {
         }
     }
 
-    public void endEpisode(Episode episode){
+    public Episode endEpisode(int id) {
         Iterable<User> users = userService.getAllUsers();
-        for (User u:users) {
+        Episode episode = getEpisodeById(id);
+        for (User u : users) {
             int points = 0;
-            Iterable<Suspicion> allSuspicions = suspicionService.getSuspicionsByUser(u.getId());
-            ArrayList<Suspicion> episodeSuspicions = new ArrayList<>();
-            for(Suspicion sus:allSuspicions){
-                if (sus.getEpisode() == episode){
-                    episodeSuspicions.add(sus);
-                }
-            }
-            for(Suspicion sus:episodeSuspicions){
-                u.setPoints(u.getPoints() - sus.getAmount());
-                if(!sus.getCandidate().getIsEliminated()){
+            Iterable<Suspicion> suspicions = suspicionService.getSuspicionsByUser(u.getId());
+            //ArrayList<Suspicion> episodeSuspicions = new ArrayList<>();
+            //for (Suspicion sus : allSuspicions) {
+                //if (sus.getEpisode() == episode) {
+                    //episodeSuspicions.add(sus);
+                //}
+            //}
+            for (Suspicion sus : suspicions) {
+                if (!sus.getCandidate().getIsEliminated()) {
                     points = points + sus.getAmount() * 2;
                 }
             }
             u.setPoints(u.getPoints() + points);
             userService.updateUser(u);
         }
+        episode.setHasEnded(true);
+        return saveEpisode(episode);
     }
 
-    public Episode getCurrentEpisode(){
+    public Episode getCurrentEpisode() {
         Iterable<Episode> episodes = getAllEpisodes();
         Episode currentEpisode = null;
         int i = 0;
-        for (Episode e: episodes
-             ) {
-            if(!e.hasEnded){
-                if(i == 0){
+        for (Episode e : episodes) {
+            if (!e.hasEnded) {
+                if (i == 0) {
                     currentEpisode = e;
                     i++;
-                } else{
-                    if (e.getStartDate().isBefore(currentEpisode.getStartDate())){
+                } else {
+                    if (e.getStartDate().isBefore(currentEpisode.getStartDate())) {
                         currentEpisode = e;
                     }
                 }
