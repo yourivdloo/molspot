@@ -9,7 +9,7 @@ build:
   stage: build
 test:
   dependencies:
-    - sonarqube
+    - build
   script: "mvn test"
   stage: test
 sonarqube:
