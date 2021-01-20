@@ -25,6 +25,12 @@ class SuspicionServiceTest {
     @Mock
     SuspicionRepository suspicionRepository;
 
+    @Mock
+    EpisodeService episodeService;
+
+    @Mock
+    UserService userService;
+
     @InjectMocks
     SuspicionService suspicionService;
 
@@ -32,13 +38,17 @@ class SuspicionServiceTest {
     void saveSuspicion(){
         //Arrange
         User user = new User("Molspotter", "Molspotter@gmail.com", "Testwachtwoord123");
+        user.setId(1);
         Candidate candidate = new Candidate("Peter");
-        Episode episode = new Episode(LocalDateTime.now());
+        candidate.setId(1);
+        Episode episode = new Episode(LocalDateTime.now().plusDays(5));
+        episode.setId(1);
         int amount = 200;
         user.setPoints(amount);
         Suspicion suspicion = new Suspicion(user, candidate, episode, amount);
 
         when(suspicionRepository.save(suspicion)).thenReturn(suspicion);
+        when(userService.updateUser(user)).thenReturn(user);
         //Act
         Suspicion actual = suspicionService.saveSuspicion(suspicion);
         //Assert
@@ -50,7 +60,7 @@ class SuspicionServiceTest {
         User user = new User("Molspotter", "Molspotter@gmail.com", "Testwachtwoord123");
         user.setPoints(100);
         Candidate candidate = new Candidate("Peter");
-        Episode episode = new Episode(LocalDateTime.now());
+        Episode episode = new Episode(LocalDateTime.now().plusDays(5));
         int amount = 200;
         Suspicion suspicion = new Suspicion(user, candidate, episode, amount);
 
@@ -74,20 +84,6 @@ class SuspicionServiceTest {
     }
 
     @Test
-    void saveSuspicion_Amount_zero(){
-        User user = new User("Molspotter", "Molspotter@gmail.com", "Testwachtwoord123");
-        user.setPoints(100);
-        Candidate candidate = new Candidate("Peter");
-        Episode episode = new Episode(LocalDateTime.now());
-        int amount = 0;
-        Suspicion suspicion = new Suspicion(user, candidate, episode, amount);
-
-        Assertions.assertThrows(BadRequestException.class, () ->{
-            suspicionService.saveSuspicion(suspicion);
-        });
-    }
-
-    @Test
     void getSuspicionsByUser(){
         //Arrange
         int id = 5;
@@ -102,6 +98,7 @@ class SuspicionServiceTest {
         Suspicion sus3 = new Suspicion(user, c3, episode, 50);
         Iterable<Suspicion> iSuspicion = new ArrayList<>() {{add(sus1); add(sus2); add(sus3);}};
         when(suspicionRepository.findAllByUserId(id)).thenReturn(iSuspicion);
+        when(episodeService.getCurrentEpisode()).thenReturn(episode);
         //Act
         Iterable<Suspicion> actual = suspicionService.getSuspicionsByUser(id);
         //Assert
@@ -111,9 +108,11 @@ class SuspicionServiceTest {
     @Test
     void getSuspicionsByUser_Not_found(){
         Suspicion[] suspicions = {};
+        Episode episode = new Episode(LocalDateTime.now().plusDays(5));
         Iterable<Suspicion> iSuspicion = Arrays.asList(suspicions);
         int id = 0;
         when(suspicionRepository.findAllByUserId(id)).thenReturn(iSuspicion);
+        when(episodeService.getCurrentEpisode()).thenReturn(episode);
         Assertions.assertThrows(NotFoundException.class, () ->{
             suspicionService.getSuspicionsByUser(id);
         });

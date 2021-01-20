@@ -36,8 +36,8 @@ public class SuspicionService {
     }
 
     public Iterable<Suspicion> getSuspicionsByUser(int userId) {
-        Episode episode = episodeService.getCurrentEpisode();
         Iterable<Suspicion> iSuspicion = suspicionRepository.findAllByUserId(userId);
+        Episode episode = episodeService.getCurrentEpisode();
         ArrayList<Suspicion> Suspicions = new ArrayList<>();
         for (Suspicion sus: iSuspicion
              ) {
