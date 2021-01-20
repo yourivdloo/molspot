@@ -2,8 +2,8 @@ stages:
   - build
   - test
   - sonarqube
-  - docker_image
-  - docker_container
+  - docker-image
+  - docker-container
 build:
   script: "mvn compile"
   stage: build
