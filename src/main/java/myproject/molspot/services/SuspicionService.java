@@ -2,11 +2,9 @@ package myproject.molspot.services;
 
 import myproject.molspot.exceptions.BadRequestException;
 import myproject.molspot.exceptions.NotFoundException;
-import myproject.molspot.models.Candidate;
 import myproject.molspot.models.Episode;
 import myproject.molspot.models.Suspicion;
 import myproject.molspot.models.User;
-import myproject.molspot.repositories.EpisodeRepository;
 import myproject.molspot.repositories.SuspicionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,15 +36,15 @@ public class SuspicionService {
     public Iterable<Suspicion> getSuspicionsByUser(int userId) {
         Iterable<Suspicion> iSuspicion = suspicionRepository.findAllByUserId(userId);
         Episode episode = episodeService.getCurrentEpisode();
-        ArrayList<Suspicion> Suspicions = new ArrayList<>();
+        ArrayList<Suspicion> suspicions = new ArrayList<>();
         for (Suspicion sus: iSuspicion
              ) {
             if(sus.getEpisode() == episode) {
-                Suspicions.add(sus);
+                suspicions.add(sus);
             }
         }
         if (iSuspicion.iterator().hasNext()) {
-            return Suspicions;
+            return suspicions;
         } else {
             throw new NotFoundException("User with id " + userId + " does not have any suspicions");
         }
@@ -65,7 +63,10 @@ public class SuspicionService {
 
     public Suspicion deleteSuspicion(int id){
             Optional<Suspicion> suspicion = suspicionRepository.findById(id);
-            suspicionRepository.delete(suspicion.get());
-            return suspicion.get();
+            if (suspicion.isPresent()){
+                suspicionRepository.delete(suspicion.get());
+                return suspicion.get();
+            }
+            throw new NotFoundException("Could not find suspicion with id "+id);
     }
 }

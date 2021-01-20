@@ -27,23 +27,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        String admin = "ADMIN";
+        String user = "USER";
         http.
                 csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers("/users/new").permitAll()
-                .antMatchers("/users/username").hasAnyRole("ADMIN", "USER")
-                .antMatchers(HttpMethod.GET,"/users/{id}").hasAnyRole("ADMIN", "USER")
-                .antMatchers(HttpMethod.PUT,"/users/{id}").hasAnyRole("ADMIN", "USER")
-                .antMatchers("/users/**").hasRole("ADMIN")
-//                .antMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
-//                .antMatchers(HttpMethod.DELETE,"/users").hasRole("ADMIN")
-//                .antMatchers(HttpMethod.PUT,"/users").hasRole("ADMIN")
-                .antMatchers("/suspicions").hasAnyRole("ADMIN","USER")
-                .antMatchers(HttpMethod.GET,"/candidates/**").hasAnyRole("ADMIN", "USER")
-//                .antMatchers(HttpMethod.GET, "/candidates/{id}").hasAnyRole("ADMIN", "USER")
-                .antMatchers("/candidates/**").hasRole("ADMIN")
-                .antMatchers("/episodes").hasRole("ADMIN")
+                .antMatchers("/users/username").hasAnyRole(admin, user)
+                .antMatchers(HttpMethod.GET,"/users/{id}").hasAnyRole(admin, user)
+                .antMatchers(HttpMethod.PUT,"/users/{id}").hasAnyRole(admin, user)
+                .antMatchers("/users/**").hasRole(admin)
+                .antMatchers("/suspicions").hasAnyRole(admin,user)
+                .antMatchers(HttpMethod.GET,"/candidates/**").hasAnyRole(admin, user)
+                .antMatchers("/candidates/**").hasRole(admin)
+                .antMatchers("/episodes").hasRole(admin)
                 .anyRequest().authenticated()
                 .and().httpBasic();
     }

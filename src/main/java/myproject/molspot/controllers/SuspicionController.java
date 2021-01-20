@@ -56,12 +56,12 @@ public class SuspicionController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-//    @DeleteMapping("/{id}")
-//    public @ResponseBody
-//    ResponseEntity<Object> deleteSuspicion(@PathVariable int id) {
-//        Suspicion result = suspicionService.deleteSuspicion(id);
-//        return new ResponseEntity<>(result, HttpStatus.OK);
-//    }
+    @DeleteMapping("/{id}")
+    public @ResponseBody
+    ResponseEntity<Object> deleteSuspicion(@PathVariable int id) {
+        Suspicion result = suspicionService.deleteSuspicion(id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
     @PutMapping("/{id}")
     public @ResponseBody

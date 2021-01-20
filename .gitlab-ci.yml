@@ -5,13 +5,17 @@ stages:
   - docker-image
   - docker-container
 build:
-  script: "mvn compile"
+  script: "mvn clean install -DskipTests"
   stage: build
 test:
+  dependencies:
+    -sonarqube
   script: "mvn test"
   stage: test
 sonarqube:
-  script: "mvn compile sonar:sonar"
+  dependencies:
+    -test
+  script: "mvn verify sonar:sonar"
   stage: sonarqube
 docker-image:
     dependencies:

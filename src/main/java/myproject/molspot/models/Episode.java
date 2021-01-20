@@ -48,7 +48,7 @@ public class Episode {
         this.hasEnded = hasEnded;
     }
 
-    public boolean hasEnded;
+    private boolean hasEnded;
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "episode")

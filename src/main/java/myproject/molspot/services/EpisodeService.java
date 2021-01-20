@@ -9,9 +9,7 @@ import myproject.molspot.repositories.EpisodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -65,12 +63,6 @@ public class EpisodeService {
         for (User u : users) {
             int points = 0;
             Iterable<Suspicion> suspicions = suspicionService.getSuspicionsByUser(u.getId());
-            //ArrayList<Suspicion> episodeSuspicions = new ArrayList<>();
-            //for (Suspicion sus : allSuspicions) {
-                //if (sus.getEpisode() == episode) {
-                    //episodeSuspicions.add(sus);
-                //}
-            //}
             for (Suspicion sus : suspicions) {
                 if (!sus.getCandidate().getIsEliminated()) {
                     points = points + sus.getAmount() * 2;
@@ -88,7 +80,7 @@ public class EpisodeService {
         Episode currentEpisode = null;
         int i = 0;
         for (Episode e : episodes) {
-            if (!e.hasEnded) {
+            if (!e.getHasEnded()) {
                 if (i == 0) {
                     currentEpisode = e;
                     i++;
