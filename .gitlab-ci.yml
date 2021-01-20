@@ -9,12 +9,12 @@ build:
   stage: build
 test:
   dependencies:
-    -sonarqube
+    - sonarqube
   script: "mvn test"
   stage: test
 sonarqube:
   dependencies:
-    -test
+    - test
   script: "mvn verify sonar:sonar"
   stage: sonarqube
 docker-image:
