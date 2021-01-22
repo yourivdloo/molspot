@@ -1,9 +1,10 @@
 package myproject.molspot.models;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+@SpringBootTest
 class SuspicionTest {
     @Test
     void SuspicionCtor(){
@@ -16,6 +17,10 @@ class SuspicionTest {
         Suspicion sus = new Suspicion(user, candidate, episode, amount);
         //assert
         assertEquals(amount, sus.getAmount());
+        assertEquals(user, sus.getUser());
+        assertEquals(candidate, sus.getCandidate());
+        assertEquals(episode, sus.getEpisode());
+
     }
 
 }

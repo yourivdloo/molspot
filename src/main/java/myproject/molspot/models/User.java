@@ -88,12 +88,6 @@ public class User {
         this.roles = roles;
     }
 
-    @ManyToMany
-    @JoinTable(name = "pool_members",
-            joinColumns = {@JoinColumn(name = "userId")},
-            inverseJoinColumns = {@JoinColumn(name = "poolId")})
-    private Collection<Pool> pools = new ArrayList<>();
-
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Collection<Suspicion> suspicions = new ArrayList<>();

@@ -43,9 +43,9 @@ class UserServiceTest {
 
         when(userRepository.findById(id)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(NotFoundException .class, () ->{
-            userService.getUserById(id);
-        });
+        Assertions.assertThrows(NotFoundException .class, () ->
+            userService.getUserById(id)
+        );
     }
 
     @Test
@@ -69,9 +69,9 @@ class UserServiceTest {
         when(userRepository.findByEmailAddress(user.getEmailAddress())).thenReturn(Optional.empty());
         when(userRepository.save(user)).thenReturn(user);
 
-        Assertions.assertThrows(BadRequestException.class, () ->{
-            userService.createUser(user);
-        });
+        Assertions.assertThrows(BadRequestException.class, () ->
+            userService.createUser(user)
+        );
     }
 
     @Test
@@ -81,9 +81,9 @@ class UserServiceTest {
         when(userRepository.findByEmailAddress(user.getEmailAddress())).thenReturn(Optional.of(user));
         when(userRepository.save(user)).thenReturn(user);
 
-        Assertions.assertThrows(BadRequestException.class, () ->{
-            userService.createUser(user);
-        });
+        Assertions.assertThrows(BadRequestException.class, () ->
+            userService.createUser(user)
+        );
     }
 
     @Test
@@ -120,9 +120,9 @@ class UserServiceTest {
         user.setId(id);
         when(userRepository.findById(id)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(NotFoundException .class, () ->{
-            userService.deleteUser(id);
-        });
+        Assertions.assertThrows(NotFoundException .class, () ->
+            userService.deleteUser(id)
+        );
     }
 
     @Test
@@ -134,5 +134,28 @@ class UserServiceTest {
         User actual = userService.updateUser(user);
         //Assert
         assertEquals(user, actual);
+    }
+
+    @Test
+    void getUserByUsername(){
+        //Arrange
+        String username = "Test-user5";
+        User user = new User(username, "test.user5@gmail.com", "p@ssw0rd");
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        //Act
+        User actual = userService.getUserByUsername(username);
+        //Assert
+        assertEquals(user,actual);
+    }
+
+    @Test
+    void getUserByUsername_Not_Found(){
+        String username = "Test-user5";
+
+        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(NotFoundException .class, () ->{
+            User actual = userService.getUserByUsername(username);
+        });
     }
 }

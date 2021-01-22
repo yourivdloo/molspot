@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -64,9 +65,9 @@ class SuspicionServiceTest {
         int amount = 200;
         Suspicion suspicion = new Suspicion(user, candidate, episode, amount);
 
-        Assertions.assertThrows(BadRequestException.class, () ->{
-            suspicionService.saveSuspicion(suspicion);
-        });
+        Assertions.assertThrows(BadRequestException.class, () ->
+            suspicionService.saveSuspicion(suspicion)
+        );
     }
 
     @Test
@@ -78,15 +79,15 @@ class SuspicionServiceTest {
         int amount = -200;
         Suspicion suspicion = new Suspicion(user, candidate, episode, amount);
 
-        Assertions.assertThrows(BadRequestException.class, () ->{
-            suspicionService.saveSuspicion(suspicion);
-        });
+        Assertions.assertThrows(BadRequestException.class, () ->
+            suspicionService.saveSuspicion(suspicion)
+        );
     }
 
     @Test
     void getSuspicionsByUser(){
         //Arrange
-        int id = 5;
+        int userId = 5;
         User user = new User("Molspotter", "Molspotter@gmail.com", "Testwachtwoord123");
         Episode episode = new Episode(LocalDateTime.now());
         Candidate c1 = new Candidate("Peter");
@@ -97,10 +98,10 @@ class SuspicionServiceTest {
         Suspicion sus2 = new Suspicion(user, c2, episode, 100);
         Suspicion sus3 = new Suspicion(user, c3, episode, 50);
         Iterable<Suspicion> iSuspicion = new ArrayList<>() {{add(sus1); add(sus2); add(sus3);}};
-        when(suspicionRepository.findAllByUserId(id)).thenReturn(iSuspicion);
+        when(suspicionRepository.findAllByUserId(userId)).thenReturn(iSuspicion);
         when(episodeService.getCurrentEpisode()).thenReturn(episode);
         //Act
-        Iterable<Suspicion> actual = suspicionService.getSuspicionsByUser(id);
+        Iterable<Suspicion> actual = suspicionService.getSuspicionsByUser(userId);
         //Assert
         assertEquals(iSuspicion, actual);
     }
@@ -113,9 +114,52 @@ class SuspicionServiceTest {
         int id = 0;
         when(suspicionRepository.findAllByUserId(id)).thenReturn(iSuspicion);
         when(episodeService.getCurrentEpisode()).thenReturn(episode);
+        Assertions.assertThrows(NotFoundException.class, () ->
+            suspicionService.getSuspicionsByUser(id)
+        );
+    }
+
+    @Test
+    void getSuspicionById(){
+        //Arrange
+        int id = 1;
+        User user = new User("Molspotter", "Molspotter@gmail.com", "Testwachtwoord123");
+        Episode e = new Episode(LocalDateTime.now());
+        Candidate c = new Candidate("Peter");
+        Suspicion sus = new Suspicion(user, c, e, 100);
+        sus.setId(id);
+
+        when(suspicionRepository.findById(id)).thenReturn(Optional.of(sus));
+        //Act
+        Suspicion actual = suspicionService.getSuspicionById(id);
+        //Assert
+        assertEquals(sus, actual);
+    }
+
+    @Test
+    void getSuspicionById_Not_Found(){
+        int id = 1;
+
+        when(suspicionRepository.findById(id)).thenReturn(Optional.empty());
         Assertions.assertThrows(NotFoundException.class, () ->{
-            suspicionService.getSuspicionsByUser(id);
+            Suspicion actual = suspicionService.getSuspicionById(id);
         });
     }
 
+    @Test
+    void deleteSuspicion(){
+        //Arrange
+        int id = 1;
+        User user = new User("Molspotter", "Molspotter@gmail.com", "Testwachtwoord123");
+        Episode e = new Episode(LocalDateTime.now());
+        Candidate c = new Candidate("Peter");
+        Suspicion sus = new Suspicion(user, c, e, 100);
+        sus.setId(id);
+
+        when(suspicionRepository.findById(id)).thenReturn(Optional.of(sus));
+        //Act
+        Suspicion actual = suspicionService.deleteSuspicion(id);
+        //Assert
+        assertEquals(sus, actual);
+    }
 }

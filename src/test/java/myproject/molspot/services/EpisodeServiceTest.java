@@ -29,20 +29,14 @@ class EpisodeServiceTest {
     @Mock
     EpisodeRepository episodeRepository;
 
-    @InjectMocks
-    EpisodeService episodeService;
-
     @Mock
-    UserRepository userRepository;
-
-    @InjectMocks
     UserService userService;
 
     @Mock
-    SuspicionRepository suspicionRepository;
+    SuspicionService suspicionService;
 
     @InjectMocks
-    SuspicionService suspicionService;
+    EpisodeService episodeService;
 
     @Test
     void getEpisodeById(){
@@ -65,9 +59,9 @@ class EpisodeServiceTest {
 
         when(episodeRepository.findById(id)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(NotFoundException.class, () ->{
-            episodeService.getEpisodeById(id);
-        });
+        Assertions.assertThrows(NotFoundException.class, () ->
+            episodeService.getEpisodeById(id)
+        );
     }
 
     @Test
@@ -91,9 +85,9 @@ class EpisodeServiceTest {
         Episode[] episodes = {};
         Iterable<Episode> iEpisodes = Arrays.asList(episodes);
         when(episodeRepository.findAll()).thenReturn(iEpisodes);
-        Assertions.assertThrows(NotFoundException.class, () ->{
-            episodeService.getAllEpisodes();
-        });
+        Assertions.assertThrows(NotFoundException.class, () ->
+            episodeService.getAllEpisodes()
+        );
     }
 
     @Test
@@ -112,9 +106,9 @@ class EpisodeServiceTest {
         Episode episode = new Episode(LocalDateTime.now().minusWeeks(1));
         when(episodeRepository.save(episode)).thenReturn(episode);
 
-        Assertions.assertThrows(BadRequestException.class, () ->{
-            episodeService.saveEpisode(episode);
-        });
+        Assertions.assertThrows(BadRequestException.class, () ->
+            episodeService.saveEpisode(episode)
+        );
     }
 
     @Test
@@ -137,9 +131,9 @@ class EpisodeServiceTest {
         episode.setId(1);
         when(episodeRepository.findById(id)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(NotFoundException.class, () ->{
-            episodeService.deleteEpisode(id);
-        });
+        Assertions.assertThrows(NotFoundException.class, () ->
+            episodeService.deleteEpisode(id)
+        );
     }
 
     @Test
@@ -170,7 +164,7 @@ class EpisodeServiceTest {
 //        u1.setId(2);
 //        u2.setPoints(200);
 //        Iterable<User> users = new ArrayList<>(){{add(u1); add(u2);}};
-//        when(userRepository.findAll()).thenReturn(users);
+//        when(userService.getAllUsers()).thenReturn(users);
 //
 //        Episode episode = new Episode(LocalDateTime.now().minusHours(3));
 //
@@ -191,15 +185,15 @@ class EpisodeServiceTest {
 //        Suspicion sus3 = new Suspicion(u2,can2,episode, 200);
 //        Iterable<Suspicion> suspicionsU2 = new ArrayList<>(){{add(sus3);}};
 //
-//        when(suspicionRepository.findAllByUserId(u1.getId())).thenReturn(suspicionsU1);
-//        when(suspicionRepository.findAllByUserId(u2.getId())).thenReturn(suspicionsU2);
+//        when(suspicionService.getSuspicionsByUser(u1.getId())).thenReturn(suspicionsU1);
+//        when(suspicionService.getSuspicionsByUser(u2.getId())).thenReturn(suspicionsU2);
 //
-//        when(userRepository.save(any(User.class))).thenReturn(any(User.class));
+//        when(userService.updateUser(any(User.class))).thenReturn(any(User.class));
 //
 //        //Act
-//        episodeService.endEpisode(episode);
+//        Episode endedEpisode = episodeService.endEpisode(episode.getId());
 //
 //        //Assert
-//        assertEquals(expectedU1, u1);
+//        assertEquals(true, endedEpisode.getHasEnded());
 //    }
 }

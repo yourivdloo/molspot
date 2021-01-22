@@ -12,11 +12,14 @@ class EpisodeTest {
     @Test
     void episodeCtor(){
         //arrange
-        LocalDateTime expected = LocalDateTime.now();
+        LocalDateTime startDate = LocalDateTime.now();
+        int id = 1;
         //act
-        Episode episode = new Episode(expected);
+        Episode episode = new Episode(startDate);
+        episode.setId(1);
         //assert
-        assertEquals(expected, episode.getStartDate());
+        assertEquals(startDate, episode.getStartDate());
+        assertEquals(id, episode.getId());
     }
 
 }
